@@ -1,0 +1,48 @@
+name: Deploy/destroy AWS infrastructure for Cocktail Master project
+
+on:
+  # push:
+  #   branches:
+  #     - cicd_workflow
+
+  workflow_dispatch:
+    inputs:
+      image_tag:
+        description: "Cocktail master image version to deploy"
+        required: false
+        default: "latest"
+      mode:
+        description: "'create' or 'destroy' infrastructure"
+        required: false
+        default: "create"
+
+# job definitions
+jobs:
+  create-job:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: eu-central-1
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v1
+      - name: Terraform Format
+        id: fmt
+        run: terraform fmt -check
+      - name: Terraform Init
+        id: init
+        run: terraform init
+      - name: Terraform Validate
+        id: validate
+        run: terraform validate -no-color
+      - name: Terraform Apply
+        run: |
+          terraform apply -var="db_username=${{ secrets.DB_USERNAME }}" \
+          -var="db_password=${{ secrets.DB_PASSWORD }}" \
+          -var="django_key=${{ secrets.DJANGO_SECRET_KEY }}" \
+          -var="image_tag=${{ github.event.inputs.image_tag }}" -auto-approve
