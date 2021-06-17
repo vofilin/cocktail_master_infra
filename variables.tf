@@ -71,5 +71,5 @@ variable "repo_url" {
 variable "image_tag" {
   description = "Docker image tag."
   type        = string
-  default     = "1.2.2"
+  default     = "latest"
 }

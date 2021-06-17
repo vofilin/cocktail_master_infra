@@ -3,7 +3,7 @@ output "db_address" {
   value       = aws_db_instance.database.address
 }
 
-output "ecs-private-ips" {
+output "ecs-public-ips" {
   description = "IP of the active EC2 instance"
   value       = data.aws_instances.ecs_instances_meta.public_ips
 }
