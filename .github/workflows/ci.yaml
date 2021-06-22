@@ -46,6 +46,7 @@ jobs:
         run: echo "IP_ADDRESS=$(terraform output -json ecs-public-ips | jq -r '.[0]')" >> $GITHUB_ENV
       - name: Send notification
         uses: appleboy/telegram-action@master
+        if: ${{ always() }}
         with:
           to: ${{ secrets.TELEGRAM_TO }}
           token: ${{ secrets.TELEGRAM_TOKEN }}
@@ -79,6 +80,7 @@ jobs:
         run: terraform destroy -auto-approve
       - name: Send notification
         uses: appleboy/telegram-action@master
+        if: ${{ always() }}
         with:
           to: ${{ secrets.TELEGRAM_TO }}
           token: ${{ secrets.TELEGRAM_TOKEN }}
