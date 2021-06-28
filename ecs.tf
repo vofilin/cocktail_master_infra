@@ -66,6 +66,10 @@ resource "aws_ecs_cluster" "ecs_cluster" {
   capacity_providers = [aws_ecs_capacity_provider.asg_capacity_provider.name]
   depends_on         = [aws_ecs_capacity_provider.asg_capacity_provider]
 
+  tags = {
+    "app" = var.app_name
+  }
+
   # We need to terminate all instances before the cluster can be destroyed.
   # (Terraform would handle this automatically if the autoscaling group depended
   #  on the cluster, but we need to have the dependency in the reverse

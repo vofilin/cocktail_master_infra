@@ -17,4 +17,7 @@ resource "aws_db_instance" "database" {
   vpc_security_group_ids = [module.db_security_group.security_group_id]
 
   skip_final_snapshot = true
+  tags = {
+    "app" = var.app_name
+  }
 }
