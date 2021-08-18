@@ -8,6 +8,7 @@ resource "aws_db_instance" "database" {
   name              = var.app_name
   identifier        = var.db_identifier
   engine            = "postgres"
+  engine_version    = "12.7"
   instance_class    = "db.t2.micro"
   port              = 5432
   username          = var.db_username
