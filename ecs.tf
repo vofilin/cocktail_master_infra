@@ -36,6 +36,7 @@ resource "aws_autoscaling_group" "failure_analysis_ecs_asg" {
   name                 = "${var.app_name}-asg"
   vpc_zone_identifier  = module.vpc.public_subnets
   launch_configuration = aws_launch_configuration.ecs_launch_config.name
+  target_group_arns    = [aws_lb_target_group.cocktail_master.arn]
 
   desired_capacity          = 1
   min_size                  = 1

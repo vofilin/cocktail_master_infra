@@ -42,8 +42,10 @@ jobs:
           -var="db_password=${{ secrets.DB_PASSWORD }}" \
           -var="django_key=${{ secrets.DJANGO_SECRET_KEY }}" \
           -var="image_tag=${{ github.event.inputs.image_tag }}" -auto-approve
-      - name: Output IP address of the application
-        run: echo "IP_ADDRESS=$(terraform output -json ecs-public-ips | jq -r '.[0]')" >> $GITHUB_ENV
+      - name: Output IP address of the instance
+        run: echo "IP_ADDRESS=$(terraform output -json ecs_public_ips | jq -r '.[0]')" >> $GITHUB_ENV
+      - name: Output address of the ALB
+        run: echo "ALB_ADDRESS=$(terraform output -json  alb_address | jq -r)" >> $GITHUB_ENV
       - name: Send notification
         uses: appleboy/telegram-action@master
         if: ${{ always() }}
@@ -54,7 +56,8 @@ jobs:
           message: |
             CREATE-JOB for *Cocktail Master Infra v ${{ github.event.inputs.image_tag }}*
             completed with a *${{ JOB.STATUS }}*
-            URL: http://${{ env.IP_ADDRESS }}
+            IP: ${{ env.IP_ADDRESS }}
+            URL: http://${{ env.ALB_ADDRESS }}
 
   destroy-job:
     runs-on: ubuntu-latest
